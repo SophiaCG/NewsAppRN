@@ -6,10 +6,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  bookmarkNavIcon: {
+    color: 'white',
+    fontSize: 20,
+    marginRight: 20,
+  },
   firstArticleImage: {
     width: 325,
     height: 225,
     borderRadius: 5,
+    marginTop: 15,
   },
   firstArticleTitle: {
     fontSize: 18,
@@ -21,7 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: 315,
+    width: 320,
   },
   firstArticleAuthor: {
     fontSize: 15,
@@ -45,8 +51,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // borderWidth: 1,
     // borderColor: 'red',
-    width: '90%',
+    width: '92%',
     marginTop: 15,
+    marginLeft: 15,
     borderTopWidth: 1,
     borderTopColor: '#C7C7C7',
     paddingTop: 15,
@@ -59,7 +66,7 @@ const styles = StyleSheet.create({
     // borderColor: 'blue',
   },
   articleDetailsContainer: {
-    width: 200,
+    width: 210,
 
     // borderWidth: 1,
     // borderColor: 'purple',
