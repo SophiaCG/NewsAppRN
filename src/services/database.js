@@ -14,29 +14,29 @@ const db = SQLite.openDatabase(
 const initDatabase = () => {
   db.transaction(tx => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS saved_articles (id INTEGER PRIMARY KEY)',
+      'CREATE TABLE IF NOT EXISTS saved_articles (url STRING PRIMARY KEY)',
     );
   });
 };
 
-const insertArticleId = articleId => {
+const insertArticleUrl = articleUrl => {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO saved_articles (id) VALUES (?)',
-      [articleId],
-      () => console.log('Article ID inserted successfully'),
-      error => console.error('Error inserting article ID', error),
+      'INSERT INTO saved_articles (url) VALUES (?)',
+      [articleUrl],
+      () => console.log('Article URL inserted successfully'),
+      error => console.error('Error inserting article URL', error),
     );
   });
 };
 
-const deleteArticleId = articleId => {
+const deleteArticleUrl = articleUrl => {
   db.transaction(tx => {
     tx.executeSql(
-      'DELETE FROM saved_articles WHERE id = ?',
-      [articleId],
-      () => console.log('Article ID deleted successfully'),
-      error => console.error('Error deleting article ID', error),
+      'DELETE FROM saved_articles WHERE url = ?',
+      [articleUrl],
+      () => console.log('Article URL deleted successfully'),
+      error => console.error('Error deleting article URL', error),
     );
   });
 };
@@ -44,19 +44,19 @@ const deleteArticleId = articleId => {
 const fetchData = callback => {
   db.transaction(tx => {
     tx.executeSql(
-      'SELECT id FROM saved_articles',
+      'SELECT url FROM saved_articles',
       [],
       (tx, results) => {
         const len = results.rows.length;
-        const ids = [];
+        const urls = [];
         for (let i = 0; i < len; i++) {
-          ids.push(results.rows.item(i).id);
+          urls.push(results.rows.item(i).url);
         }
-        callback(ids);
+        callback(urls);
       },
-      error => console.error('Error fetching saved article IDs', error),
+      error => console.error('Error fetching saved article URLs', error),
     );
   });
 };
 
-export {initDatabase, insertArticleId, deleteArticleId, fetchData};
+export {initDatabase, insertArticleUrl, deleteArticleUrl, fetchData};
