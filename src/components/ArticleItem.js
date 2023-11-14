@@ -1,9 +1,8 @@
-// components/ArticleItem.js
 import React from 'react';
 import {View, Image, Text, TouchableOpacity, Linking} from 'react-native';
 import TimeAgo from './TimeAgo';
 import BookmarkButton from './BookmarkButton';
-import styles from '../styles'; // Import your styles
+import styles from '../styles';
 
 const ArticleItem = ({article, isSaved, onPressBookmark}) => (
   <TouchableOpacity

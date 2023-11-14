@@ -1,12 +1,8 @@
 import React from 'react';
 import {View, Image, Text, TouchableOpacity, Linking} from 'react-native';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faBookmark as outlinedBookmark} from '@fortawesome/free-regular-svg-icons/faBookmark';
-import {faBookmark as filledBookmark} from '@fortawesome/free-solid-svg-icons/faBookmark';
 import TimeAgo from './TimeAgo';
 import BookmarkButton from './BookmarkButton';
-import styles from '../styles'; // Import your styles
-
+import styles from '../styles';
 const FirstArticle = ({article, isSaved, onPressBookmark}) => (
   <TouchableOpacity
     onPress={() =>

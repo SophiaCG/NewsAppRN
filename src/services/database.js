@@ -14,29 +14,29 @@ const db = SQLite.openDatabase(
 const initDatabase = () => {
   db.transaction(tx => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS saved_articles (url STRING PRIMARY KEY)',
+      'CREATE TABLE IF NOT EXISTS saved_articles (url STRING PRIMARY KEY, title STRING, author STRING, urlToImage STRING, publishedAt STRING)',
     );
   });
 };
 
-const insertArticleUrl = articleUrl => {
+const insertArticle = (articleUrl, title, author, urlToImage, publishedAt) => {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO saved_articles (url) VALUES (?)',
-      [articleUrl],
-      () => console.log('Article URL inserted successfully'),
-      error => console.error('Error inserting article URL', error),
+      'INSERT INTO saved_articles (url, title, author, urlToImage, publishedAt) VALUES (?, ?, ?, ?, ?)',
+      [articleUrl, title, author, urlToImage, publishedAt],
+      () => console.log('Article inserted successfully'),
+      error => console.error('Error inserting article', error),
     );
   });
 };
 
-const deleteArticleUrl = articleUrl => {
+const deleteArticle = articleUrl => {
   db.transaction(tx => {
     tx.executeSql(
       'DELETE FROM saved_articles WHERE url = ?',
       [articleUrl],
-      () => console.log('Article URL deleted successfully'),
-      error => console.error('Error deleting article URL', error),
+      () => console.log('Article deleted successfully'),
+      error => console.error('Error deleting article', error),
     );
   });
 };
@@ -44,19 +44,26 @@ const deleteArticleUrl = articleUrl => {
 const fetchData = callback => {
   db.transaction(tx => {
     tx.executeSql(
-      'SELECT url FROM saved_articles',
+      'SELECT url, title, author, urlToImage, publishedAt FROM saved_articles',
       [],
       (tx, results) => {
         const len = results.rows.length;
-        const urls = [];
+        const articles = [];
         for (let i = 0; i < len; i++) {
-          urls.push(results.rows.item(i).url);
+          const item = results.rows.item(i);
+          articles.push({
+            url: item.url,
+            title: item.title,
+            author: item.author,
+            urlToImage: item.urlToImage,
+            publishedAt: item.publishedAt,
+          });
         }
-        callback(urls);
+        callback(articles);
       },
-      error => console.error('Error fetching saved article URLs', error),
+      error => console.error('Error fetching saved articles', error),
     );
   });
 };
 
-export {initDatabase, insertArticleUrl, deleteArticleUrl, fetchData};
+export {initDatabase, insertArticle, deleteArticle, fetchData};

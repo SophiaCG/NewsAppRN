@@ -1,18 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Button,
-  View,
-  Text,
-  Image,
-  FlatList,
-  Linking,
-  TouchableOpacity,
-} from 'react-native';
+import {View, FlatList} from 'react-native';
 import config from '../../config';
 import {
   initDatabase,
-  insertArticleUrl,
-  deleteArticleUrl,
+  insertArticle,
+  deleteArticle,
   fetchData,
 } from '../services/database';
 import ArticleItem from '../components/ArticleItem';
@@ -21,7 +13,7 @@ import FirstArticle from '../components/FirstArticle';
 const apiKey = config.apiKey;
 
 function HomeScreen({navigation}) {
-  const [savedUrls, setSavedUrl] = useState([]);
+  const [savedArticles, setSavedArticles] = useState([]);
   const [articles, setArticles] = useState([]);
 
   const fetchNews = async () => {
@@ -42,59 +34,71 @@ function HomeScreen({navigation}) {
   useEffect(() => {
     fetchNews();
     initDatabase();
-    updateSavedUrl();
+    updateSavedArticles();
   }, []);
 
-  const isArticleSaved = articleUrl => savedUrls.includes(articleUrl);
+  const isArticleSaved = articleUrl =>
+    savedArticles.some(article => article.url === articleUrl);
 
-  const updateSavedUrl = () => {
-    fetchData(urls => {
-      setSavedUrl(urls);
+  const updateSavedArticles = () => {
+    fetchData(articles => {
+      setSavedArticles(articles);
     });
   };
 
-  const handleSaveUrl = articleUrl => {
-    insertArticleUrl(articleUrl);
-    updateSavedUrl();
+  const handleSaveArticle = article => {
+    insertArticle(
+      article.url,
+      article.title,
+      article.author,
+      article.urlToImage,
+      article.publishedAt,
+    );
+    updateSavedArticles();
   };
 
-  const handleDeleteUrl = articleUrl => {
-    deleteArticleUrl(articleUrl);
-    updateSavedUrl();
+  const handleDeleteArticle = articleUrl => {
+    deleteArticle(articleUrl);
+    updateSavedArticles();
   };
 
   const handleBookmarkPress = articleUrl => {
     if (isArticleSaved(articleUrl)) {
-      handleDeleteUrl(articleUrl);
+      handleDeleteArticle(articleUrl);
     } else {
-      handleSaveUrl(articleUrl);
+      const articleToSave = articles.find(
+        article => article.url === articleUrl,
+      );
+      if (articleToSave) {
+        handleSaveArticle(articleToSave);
+      }
     }
-    updateSavedUrl();
+    updateSavedArticles();
   };
 
-  const renderArticleItem = ({item}) => (
+  const RenderArticleItem = ({item}) => (
     <ArticleItem
       article={item}
       isSaved={isArticleSaved(item.url)}
-      onPressBookmark={handleBookmarkPress}
+      onPressBookmark={() => handleBookmarkPress(item.url)}
     />
   );
 
-  const renderFirstArticle = () => (
+  const RenderFirstArticle = () => (
     <FirstArticle
       article={articles[0]}
-      isSaved={isArticleSaved(articles[0])}
-      onPressBookmark={handleBookmarkPress}
+      isSaved={isArticleSaved(articles[0]?.url)}
+      onPressBookmark={() => handleBookmarkPress(articles[0]?.url)}
     />
   );
 
   return (
     <View style={{flex: 1, alignItems: 'center'}}>
       <FlatList
-        ListHeaderComponent={renderFirstArticle}
-        data={articles.slice(1)} // Exclude the first article
+        ListHeaderComponent={RenderFirstArticle}
+        data={articles.slice(1)}
         keyExtractor={item => item.url}
-        renderItem={renderArticleItem}
+        renderItem={RenderArticleItem}
         style={{width: '95%'}}
         contentContainerStyle={{alignItems: 'center'}}
       />

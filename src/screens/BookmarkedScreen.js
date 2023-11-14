@@ -3,60 +3,72 @@ import React, {useState, useEffect} from 'react';
 import {FlatList, View} from 'react-native';
 import {
   initDatabase,
-  insertArticleUrl,
-  deleteArticleUrl,
+  insertArticle,
+  deleteArticle,
   fetchData,
 } from '../services/database';
 import ArticleItem from '../components/ArticleItem';
 
 const BookmarkedScreen = ({navigation}) => {
-  const [savedUrls, setSavedUrls] = useState([]);
+  const [savedArticles, setSavedArticles] = useState([]);
 
   useEffect(() => {
     initDatabase();
-    updateSavedUrls();
+    updateSavedArticles();
   }, []);
 
-  const updateSavedUrls = () => {
-    fetchData(urls => {
-      setSavedUrls(urls);
+  const updateSavedArticles = () => {
+    fetchData(articles => {
+      setSavedArticles(articles);
     });
   };
 
-  const isArticleSaved = articleUrl => savedUrls.includes(articleUrl);
+  const isArticleSaved = articleUrl =>
+    savedArticles.some(article => article.url === articleUrl);
 
-  const handleSaveUrl = articleUrl => {
-    insertArticleUrl(articleUrl);
-    updateSavedUrl();
+  const handleSaveArticle = article => {
+    insertArticle(
+      article.url,
+      article.title,
+      article.author,
+      article.urlToImage,
+      article.publishedAt,
+    );
+    updateSavedArticles();
   };
 
-  const handleDeleteUrl = articleUrl => {
-    deleteArticleUrl(articleUrl);
-    updateSavedUrl();
+  const handleDeleteArticle = articleUrl => {
+    deleteArticle(articleUrl);
+    updateSavedArticles();
   };
 
   const handleBookmarkPress = articleUrl => {
     if (isArticleSaved(articleUrl)) {
-      handleDeleteUrl(articleUrl);
+      handleDeleteArticle(articleUrl);
     } else {
-      handleSaveUrl(articleUrl);
+      const articleToSave = savedArticles.find(
+        article => article.url === articleUrl,
+      );
+      if (articleToSave) {
+        handleSaveArticle(articleToSave);
+      }
     }
-    updateSavedUrl();
+    updateSavedArticles();
   };
 
   const renderArticleItem = ({item}) => (
     <ArticleItem
       article={item}
       isSaved={isArticleSaved(item.url)}
-      onPressBookmark={handleBookmarkPress}
+      onPressBookmark={() => handleBookmarkPress(item.url)}
     />
   );
 
   return (
     <View style={{flex: 1, alignItems: 'center'}}>
       <FlatList
-        data={savedUrls}
-        keyExtractor={item => item}
+        data={savedArticles}
+        keyExtractor={item => item.url}
         renderItem={renderArticleItem}
         style={{width: '95%'}}
         contentContainerStyle={{alignItems: 'center'}}
