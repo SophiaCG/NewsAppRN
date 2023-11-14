@@ -1,5 +1,5 @@
 # News App (for React Native)
-A React Native app I made to display different news articles pulled from the [News API](https://newsapi.org)
+A React Native app made to display different news articles pulled from the [News API](https://newsapi.org). Uses SQLite to bookmark articles for later.
 
 <img src="https://github.com/SophiaCG/NewsAppRN/assets/64823305/91b7df11-dd9e-4fbf-bc28-138ee7275c00" width="275" height="500">
 <img src="https://github.com/SophiaCG/NewsAppRN/assets/64823305/f7e4d24e-a93e-408a-999d-286fe4fa4e19" width="275" height="500">
